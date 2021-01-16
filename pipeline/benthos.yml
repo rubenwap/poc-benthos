@@ -1,0 +1,30 @@
+input:
+  amqp_0_9:
+    url: amqp://guest:guest@rabbitmq:5672
+    queue: "ruben"
+
+pipeline:
+  processors:
+    - sleep:
+        duration: 500ms
+    - bloblang: |
+        root.original_event = this
+        root.new_attr = "abc"
+        root.new_attr2 = 123
+
+output:
+  kafka:
+    addresses:
+      - kafka1:19091
+    topic: ruben
+    client_id: benthos_kafka_output
+    key: ""
+    partitioner: fnv1a_hash
+    compression: none
+    static_headers: {}
+    max_in_flight: 1
+    batching:
+      count: 0
+      byte_size: 0
+      period: ""
+      check: ""
